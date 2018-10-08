@@ -49,8 +49,9 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf in = (ByteBuf) msg; // 1、接收消息内容
-        String inputStr = in.toString(CharsetUtil.UTF_8); // 2、得到用户发送的数据
+//        ByteBuf in = (ByteBuf) msg; // 1、接收消息内容
+//        String inputStr = in.toString(CharsetUtil.UTF_8); // 2、得到用户发送的数据
+        String inputStr = (String) msg;// 2、得到用户发送的数据 由于再EchoServer使用了字符串解码器的原因可直接获取字符串
         String echoConntent = "【ECHO】" + inputStr;  // 3、回应的消息内容
         if ("exit".equalsIgnoreCase(inputStr)) { // 表示发送结束
             echoConntent = "quit"; // 结束的字符信息

@@ -10,6 +10,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 
 /**
  * @Auther: wangjian
@@ -33,6 +36,9 @@ public class EchoServer {
             // 5、进行Netty的数据处理过滤器配置（责任链设计模式)
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel ch) throws Exception {
+                    // 添加解码器对字符进行转码与解码
+                    ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
+                    ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
                     // 自定义的程序处理逻辑
                     ch.pipeline().addLast(new EchoServerHandler());
                 }

@@ -8,8 +8,12 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 
 /**
+ * TCP的信息连接处理
  * Created by wangjian on 2018/9/29.
  */
 public class EchoClient {
@@ -25,7 +29,11 @@ public class EchoClient {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new EchoClientHandler()); // 自定义程序处理逻辑
+                    // 添加字符串解码器进行转码和解码
+                    ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
+                    ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
+                    // 自定义程序处理逻辑
+                    ch.pipeline().addLast(new EchoClientHandler());
                 }
             });
             // 连接服务端

@@ -8,7 +8,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.sctp.nio.NioSctpServerChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
@@ -45,7 +44,7 @@ public class EchoServer {
             future.channel().closeFuture().sync(); /// 处理完成之后进行关闭
         } catch (Exception e) {
             boosLoopGroup.shutdownGracefully(); // 关闭主线程池
-            boosLoopGroup.shutdownGracefully(); // 关闭子线程池
+            handleLoopGroup.shutdownGracefully(); // 关闭子线程池
             e.printStackTrace();
         }
 

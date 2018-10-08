@@ -3,6 +3,8 @@ package com.netty.demo.handler;
 import com.netty.demo.util.InputUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.CharsetUtil;
@@ -35,7 +37,14 @@ public class EchoClientHandler extends ChannelHandlerAdapter{
             String inputStr = InputUtil.getString("请输入要发送的消息：");
             ByteBuf echoBuf = Unpooled.buffer(inputStr.length());
             echoBuf.writeBytes(inputStr.getBytes()); // 写入数据
-            ctx.writeAndFlush(echoBuf); // 发送数据
+            ChannelFuture future = ctx.writeAndFlush(echoBuf);// 发送数据
+            future.addListener(new ChannelFutureListener() {
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if (channelFuture.isSuccess()) {
+                        System.out.println("【**********************客户端回应服务端消息成功】");
+                    }
+                }
+            });
         }
     }
 }

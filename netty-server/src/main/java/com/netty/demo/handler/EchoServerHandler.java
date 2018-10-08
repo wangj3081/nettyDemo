@@ -2,6 +2,8 @@ package com.netty.demo.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.CharsetUtil;
@@ -28,7 +30,15 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
         // 3、将数据写入到缓冲区之中
         message.writeBytes(data); // 写入数据
         // 4、进行信息的发送，发送完成后更新缓冲区
-        ctx.writeAndFlush(message); // 消息发送
+        ChannelFuture future = ctx.writeAndFlush(message);// 消息发送
+
+        future.addListener(new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                if (channelFuture.isSuccess()) { // 操作成功
+                    System.out.println("【**********************服务端回应客户端成功】");
+                }
+            }
+        });
     }
 
     /**
@@ -44,8 +54,9 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
         String echoConntent = "【ECHO】" + inputStr;  // 3、回应的消息内容
         if ("exit".equalsIgnoreCase(inputStr)) { // 表示发送结束
             echoConntent = "quit"; // 结束的字符信息
+        } else if (inputStr.startsWith("userid")) {
+            echoConntent = "【服务器端】欢迎" + inputStr.split(":")[1] + "登录访问，连接通道已经建立成功，可以开始进行服务器通信处理";
         }
-
         ByteBuf ecbuffer = Unpooled.buffer(echoConntent.length());
         ecbuffer.writeBytes(echoConntent.getBytes());
         ctx.writeAndFlush(ecbuffer);

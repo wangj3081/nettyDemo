@@ -58,8 +58,8 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
         } else if (inputStr.startsWith("userid")) {
             echoConntent = "【服务器端】欢迎" + inputStr.split(":")[1] + "登录访问，连接通道已经建立成功，可以开始进行服务器通信处理";
         }
-        ByteBuf ecbuffer = Unpooled.buffer(echoConntent.length());
-        ecbuffer.writeBytes(echoConntent.getBytes());
-        ctx.writeAndFlush(ecbuffer);
+//        ByteBuf ecbuffer = Unpooled.buffer(echoConntent.length());
+//        ecbuffer.writeBytes(echoConntent.getBytes());
+        ctx.writeAndFlush(echoConntent);
     }
 }

@@ -1,5 +1,6 @@
 package com.netty.demo.handler;
 
+import com.netty.demo.api.DefaultNettyInfo;
 import com.netty.demo.util.InputUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -15,36 +16,24 @@ import io.netty.util.CharsetUtil;
  */
 public class EchoClientHandler extends ChannelHandlerAdapter{
 
+    private final int REPEAT = 500;
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception { // 客户端连接激活
-        String data = "userid:pursuit"; // 当前建立连接时用户的身份信息
+//        String data = "userid:pursuit"; // 当前建立连接时用户的身份信息
 //        ByteBuf buf = Unpooled.buffer(data.length());
 //        buf.writeBytes(data.getBytes());
-        ctx.writeAndFlush(data);
+//        ctx.writeAndFlush(data);
+        String inputStr = InputUtil.getString("请输入要发送的消息：");
+        for (int i = 0; i < REPEAT; i++) {
+            ctx.writeAndFlush(inputStr + " : " + i + DefaultNettyInfo.SPLIT_SMBOL); // 发送数据
+//            ctx.writeAndFlush(inputStr + " : " + i + System.getProperty("line.separator")); // 发送数据
+        }
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-       /* ByteBuf in = (ByteBuf) msg; // 1、接收到的消息内容
-        String content = in.toString(CharsetUtil.UTF_8); // 2、接收到的数据*/
-        String content = (String) msg;// 2、得到用户发送的数据 由于再EchoServer使用了字符串解码器的原因可直接获取字符串
-        if ("quit".equalsIgnoreCase(content)) {
-            System.out.println("###### 本次操作结束，已退出");
-//            echonContent = "【服务器端】欢迎" + inputStr.split(" : ")[1] + "登录访问，连接通道已经建立成功，可以开始进行服务器通信处理";
-            ctx.close(); // 关闭连接通道，和服务器端端口
-        } else {
-            System.out.println("【客户端】: " + content);  // 服务器端的回应数据
-            String inputStr = InputUtil.getString("请输入要发送的消息：");
-            ByteBuf echoBuf = Unpooled.buffer(inputStr.length());
-            echoBuf.writeBytes(inputStr.getBytes()); // 写入数据
-            ChannelFuture future = ctx.writeAndFlush(echoBuf);// 发送数据
-            future.addListener(new ChannelFutureListener() {
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if (channelFuture.isSuccess()) {
-                        System.out.println("【**********************客户端回应服务端消息成功】");
-                    }
-                }
-            });
-        }
+        String getMessage = (String) msg; // 接收数据
+        System.out.println("{客户端}: " + getMessage); // 服务器返回消息
     }
 }

@@ -1,8 +1,10 @@
 package com.netty.demo.server;
 
+import com.netty.demo.api.DefaultNettyInfo;
 import com.netty.demo.api.ServerInfo;
 import com.netty.demo.handler.EchoServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -10,6 +12,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.FixedLengthFrameDecoder;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
@@ -36,6 +41,11 @@ public class EchoServer {
             // 5、进行Netty的数据处理过滤器配置（责任链设计模式)
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel ch) throws Exception {
+                    // 增加粘包拆包处理器
+                    // 使用自定义分隔符
+                    ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, Unpooled.copiedBuffer(DefaultNettyInfo.SPLIT_SMBOL.getBytes())));
+//                     ch.pipeline().addLast(new LineBasedFrameDecoder(1024)); // 设置每行读取最大数
+//                     ch.pipeline().addLast(new FixedLengthFrameDecoder(50)); // 每一个数据占用50字节
                     // 添加解码器对字符进行转码与解码
                     ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
                     ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
@@ -44,7 +54,7 @@ public class EchoServer {
                 }
             });
             // 6、当前使用的是TCP协议、所以必须做一些TCP协议的配置
-            serverBootstrap.option(ChannelOption.SO_BACKLOG, 4); // 当处理线程全满时，最大请求等待队列长度, MAC OS不支持
+            serverBootstrap.option(ChannelOption.SO_BACKLOG, 2); // 当处理线程全满时，最大请求等待队列长度, MAC OS不支持
             // 7、绑定服务端口并且进行服务启动
             ChannelFuture future = serverBootstrap.bind(ServerInfo.PORT).sync();// 异步线程处理
             future.channel().closeFuture().sync(); /// 处理完成之后进行关闭

@@ -10,7 +10,6 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 /**
  * UDP主服务类，进行数据发送配置
  * @Auther: wangjian
- * @Email: wangjian@qihaiyun.com
  * @Date: 2018-10-08 19:27:42
  */
 public class UDPServer {

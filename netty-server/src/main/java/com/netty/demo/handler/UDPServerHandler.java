@@ -13,7 +13,6 @@ import java.net.InetSocketAddress;
 /**
  * UDP数据服务处理
  * @Auther: wangjian
- * @Email: wangjian@qihaiyun.com
  * @Date: 2018-10-08 19:20:35
  */
 public class UDPServerHandler  extends ChannelHandlerAdapter {

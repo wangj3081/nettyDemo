@@ -4,7 +4,6 @@ import com.netty.demo.server.UDPServer;
 
 /**
  * @Auther: wangjian
- * @Email: wangjian@qihaiyun.com
  * @Date: 2018-10-08 19:34:53
  */
 public class UDPServerStart {

@@ -54,11 +54,16 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
 //        ByteBuf in = (ByteBuf) msg; // 1、接收消息内容
 //        String inputStr = in.toString(CharsetUtil.UTF_8); // 2、得到用户发送的数据
         String inputStr = (String) msg;// 2、得到用户发送的数据 由于再EchoServer使用了字符串解码器的原因可直接获取字符串
-        System.err.println("{服务器}" + inputStr);
+        String echoConntent = "";
+        if ("quit".equals(msg)) {
+            echoConntent = "close" + DefaultNettyInfo.SPLIT_SMBOL;
+        } else {
+            System.err.println("{服务器}" + inputStr);
 //        String echoConntent = "【ECHO】" + inputStr + System.getProperty("line.separator");  // 3、回应的消息内容
-        String echoConntent = "【ECHO】" + inputStr + DefaultNettyInfo.SPLIT_SMBOL;  // 3、回应的消息内容
+            echoConntent = "【ECHO】" + inputStr + DefaultNettyInfo.SPLIT_SMBOL;  // 3、回应的消息内容
 //        ByteBuf ecbuffer = Unpooled.buffer(echoConntent.length());
 //        ecbuffer.writeBytes(echoConntent.getBytes());
+        }
         ctx.writeAndFlush(echoConntent);
     }
 }

@@ -25,15 +25,20 @@ public class EchoClientHandler extends ChannelHandlerAdapter{
 //        buf.writeBytes(data.getBytes());
 //        ctx.writeAndFlush(data);
         String inputStr = InputUtil.getString("请输入要发送的消息：");
-        for (int i = 0; i < REPEAT; i++) {
-            ctx.writeAndFlush(inputStr + " : " + i + DefaultNettyInfo.SPLIT_SMBOL); // 发送数据
-//            ctx.writeAndFlush(inputStr + " : " + i + System.getProperty("line.separator")); // 发送数据
-        }
+//        for (int i = 0; i < REPEAT; i++) {
+//            ctx.writeAndFlush(inputStr + " : " + i + DefaultNettyInfo.SPLIT_SMBOL); // 发送数据
+            ctx.writeAndFlush(inputStr + DefaultNettyInfo.SPLIT_SMBOL); // 发送数据
+//        }
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String getMessage = (String) msg; // 接收数据
-        System.out.println("{客户端}: " + getMessage); // 服务器返回消息
+        if ("close".equals(getMessage)) {
+            // 关闭连接
+            System.out.println(ctx.channel().close().isDone());
+        } else {
+            System.out.println("{客户端}: " + getMessage); // 服务器返回消息
+        }
     }
 }

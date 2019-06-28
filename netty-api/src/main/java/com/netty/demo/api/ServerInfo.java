@@ -5,7 +5,7 @@ package com.netty.demo.api;
  */
 public class ServerInfo {
 
-    public  static final  int PORT = 8181; // 服务端端口
+    public  static final  int PORT = 80; // 服务端端口
 
     public  static final  String HOSTNAME = "127.0.0.1"; // 服务器地址
 
